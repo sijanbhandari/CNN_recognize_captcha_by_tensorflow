@@ -3,10 +3,6 @@ use CNN recognize captcha by tensorflow.
 Este projeto usa tensorflow para implementar uma rede neural convolucional para códigos de verificação de imagem de caracteres para reconhecimento de código de verificação.
 O projeto engloba os módulos mais gerais de ** verificação, treinamento, verificação, reconhecimento e API **, o que reduz muito o tempo e o esforço gastos na identificação de códigos de verificação de caracteres.
   
-O projeto ajudou muitos alunos a concluir com eficiência a tarefa de identificação do código de verificação.
-Se você tiver um bug e fizer boas melhorias durante o uso, fique à vontade para enviar um problema e uma RP, e o autor responderá o mais rápido possível, na esperança de melhorar o projeto com você.
-
-Se você precisar identificar códigos de verificação de clique, arraste e solte, ou se tiver requisitos de detecção de alvo, você também pode consultar este projeto[nickliqian/darknet_captcha](https://github.com/nickliqian/darknet_captcha)。
 
 # cronograma
 #### 2018.11.12
