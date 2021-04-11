@@ -1,397 +1,398 @@
 # cnn_captcha
 use CNN recognize captcha by tensorflow.  
-本项目针对字符型图片验证码，使用tensorflow实现卷积神经网络，进行验证码识别。  
-项目封装了比较通用的**校验、训练、验证、识别、API模块**，极大的减少了识别字符型验证码花费的时间和精力。 
+Este projeto usa tensorflow para implementar uma rede neural convolucional para códigos de verificação de imagem de caracteres para reconhecimento de código de verificação.
+O projeto engloba os módulos mais gerais de ** verificação, treinamento, verificação, reconhecimento e API **, o que reduz muito o tempo e o esforço gastos na identificação de códigos de verificação de caracteres.
   
-项目已经帮助很多同学高效完成了验证码识别任务。
-如果你在使用过程中出现了bug和做了良好的改进，欢迎提出issue和PR，作者会尽快回复，希望能和你共同完善项目。 
+O projeto ajudou muitos alunos a concluir com eficiência a tarefa de identificação do código de verificação.
+Se você tiver um bug e fizer boas melhorias durante o uso, fique à vontade para enviar um problema e uma RP, e o autor responderá o mais rápido possível, na esperança de melhorar o projeto com você.
 
-如果你需要识别点选、拖拽类验证码，或者有目标检测需求，也可以参考这个项目[nickliqian/darknet_captcha](https://github.com/nickliqian/darknet_captcha)。
+Se você precisar identificar códigos de verificação de clique, arraste e solte, ou se tiver requisitos de detecção de alvo, você também pode consultar este projeto[nickliqian/darknet_captcha](https://github.com/nickliqian/darknet_captcha)。
 
-# 时间表
+# cronograma
 #### 2018.11.12
-初版Readme.md  
+Primeira ediçãoReadme.md  
 #### 2018.11.21
-加入关于验证码识别的一些说明  
+Adicione algumas instruções sobre o reconhecimento do código de verificação 
 #### 2018.11.24
-优化校验数据集图片的规则  
+Otimize as regras para verificar as imagens do conjunto de dados 
 #### 2018.11.26
-新增`train_model_v2.py`文件，训练过程中同时输出训练集和验证集的准确率  
+Adicionar`train_model_v2.py`Arquivo, saída da precisão do conjunto de treinamento e conjunto de validação ao mesmo tempo durante o treinamento  
 #### 2018.12.06
-新增多模型部署支持，修复若干bug  
+Recentemente, aumente o suporte de implantação de modelo e conserte váriosbug  
 #### 2018.12.08
-优化模型识别速度，支持api压力测试和统计耗时  
+Otimize a velocidade de reconhecimento do modelo, suporte o teste de estresse da API e as estatísticas demoradas  
 #### 2019.02.19
-1. 新增一种准确率计算方式    
+1. Adicionado um novo método de cálculo de taxa de precisão    
 2. TAG: v1.0
 #### 2019.04.12
-1. 只保留一种`train_model.py`文件
-2. 优化代码结构
-3. 把通用配置抽取到`sample_config.json`和`captcha_config.json`
-4. 修复若干大家在issue提出的问题
+1. Mantenha apenas um`train_model.py`Arquivo
+2. Otimize a estrutura do código
+3. Extraia a configuração geral para`sample_config.json`和`captcha_config.json`
+4. Corrija alguns problemas levantados por todos na questão
 #### 2019.06.01
-1. 完善readme文档，文档不长，请大家一定要读完~
-2. 使用cnnlib目录存放神经网络结构代码
-3. 做了一版训练数据统计，大家可以参考我们的训练次数、时长和准确率
+1. Melhore o documento leia-me, o documento não é longo, certifique-se de o ler ~
+2. Use o diretório cnnlib para armazenar o código da estrutura da rede neural
+3.Fizemos uma versão das estatísticas de dados de treinamento, você pode consultar nossos tempos de treinamento, duração e precisão
 4. TAG: v2.0  
 
-# 目录
-<a href="#项目介绍">1 项目介绍</a>  
-- <a href="#关于验证码识别">1.1 关于验证码识别</a>  
-- <a href="#目录结构">1.2 目录结构</a>  
-- <a href="#依赖">1.3 依赖</a>  
-- <a href="#模型结构">1.4 模型结构</a>  
+# índice
+<a href="#Project Introdução">1 Introdução ao Projeto</a>  
+- <a href="#Sobre o reconhecimento do código de verificação">1.1 Sobre o reconhecimento do código de verificação</a>  
+- <a href="#Estrutura de Diretório">1.2Estrutura de Diretório</a>  
+- <a href="#confiar">1.3 confiar</a>  
+- <a href="#Estrutura do modelo">1.4 Estrutura do modelo</a>  
 
-<a href="#如何使用">2 如何使用</a>  
-- <a href="#数据集">2.1 数据集</a>  
-- <a href="#配置文件">2.2 配置文件</a>  
-- <a href="#验证和拆分数据集">2.3 验证和拆分数据集</a>  
-- <a href="#训练模型">2.4 训练模型</a>  
-- <a href="#批量验证">2.5 批量验证</a>  
-- <a href="#启动WebServer">2.6 启动WebServer</a>  
-- <a href="#调用接口识别">2.7 调用接口识别</a>  
-- <a href="#部署">2.8 部署</a>  
-- <a href="#部署多个模型">2.9 部署多个模型</a>  
-- <a href="#在线识别">2.10 在线识别</a>  
+<a href="#Como usar">2 Como usar</a>  
+- <a href="#data set">2.1 conjunto de dados</a>  
+- <a href="#Arquivo de configuração">2.2 Arquivo de configuração</a>  
+- <a href="#Valide e divida o conjunto de dados">2.3Valide e divida o conjunto de dados</a>  
+- <a href="#Modelo de treinamento">2.4Modelo de treinamento</a>  
+- <a href="#Bulk Verification">2.5 Verificação de lote</a>  
+- <a href="#comeceWebServer">2.6 comeceWebServer</a>  
+- <a href="#Identificação da interface de chamada">2.7 Identificação da interface de chamada</a>  
+- <a href="#implantar">2.8 implantar</a>  
+- <a href="#Implante vários modelos">2.9Implante vários modelos</a>  
+- <a href="#Reconhecimento online">2.10 Reconhecimento online</a>  
 
-<a href="#说明">3 统计数据</a>  
-- <a href="#训练数据统计">3.1 训练数据统计</a>  
-- <a href="#压力测试">3.2 压力测试</a>  
+<a href="#Descrição">3 Dados estatísticos</a>  
+- <a href="#Treining data statistics">3.1 Estatísticas de dados de treinamento</a>  
+- <a href="#teste de pressão">3.2 teste de pressão</a>  
 
-<a href="#开发说明">4 开发说明</a>  
+<a href="#Instruções de desenvolvimento">4 Instruções de desenvolvimento</a>  
 
-<a href="#已知BUG">5 已知BUG</a>  
+<a href="#Um conhecidoBUG">5 Um conhecidoBUG</a>  
 
 
 
-# 1 项目介绍
-## 1.1 关于验证码识别
-验证码识别大多是爬虫会遇到的问题，也可以作为图像识别的入门案例。目前通常使用如下几种方法：  
+# 1 Introdução ao Projeto
+## 1.1 Sobre o reconhecimento do código de verificação
+O reconhecimento do código de verificação é principalmente um problema encontrado pelos rastreadores e também pode ser usado como um caso introdutório para o reconhecimento de imagem. Atualmente, os seguintes métodos são geralmente usados：  
 
-| 方法名称 | 相关要点 |
+| Nome do método | Pontos relacionados |
 | ------ | ------ |
-| tesseract | 仅适合识别没有干扰和扭曲的图片，训练起来很麻烦 |
-| 其他开源识别库 | 不够通用，识别率未知 |
-| 付费OCR API | 需求量大的情形成本很高 |
-| 图像处理+机器学习分类算法 | 涉及多种技术，学习成本高，且不通用 |
-| 卷积神经网络 | 一定的学习成本，算法适用于多类验证码 |
+| tesseract | Adequado apenas para reconhecer imagens sem interferência e distorção，Muito problemático para treinar |
+| Outras bibliotecas de reconhecimento de código aberto | Não é geral o suficiente，Taxa de reconhecimento desconhecida |
+| PagoOCR API | A situação de alta demanda é muito cara |
+| Processamento de imagem + algoritmo de classificação de aprendizado de máquina | Envolvendo uma variedade de tecnologias, altos custos de aprendizagem，E não universal |
+| Rede Neural Convolucional | Um certo custo de aprendizagem, o algoritmo é adequado para vários tipos de códigos de verificação |
 
-这里说一下使用传统的**图像处理和机器学习算法**，涉及多种技术：  
+Aqui, falamos sobre o uso de ** algoritmos de processamento de imagem e aprendizado de máquina ** tradicionais, envolvendo uma variedade de tecnologias:  
 
-1. 图像处理
-- 前处理（灰度化、二值化）
-- 图像分割
-- 裁剪（去边框）
-- 图像滤波、降噪
-- 去背景
-- 颜色分离
-- 旋转
-2. 机器学习
+1. Processamento de imagem
+- Pré-processamento (escala de cinza, binarização)
+- Segmentação de imagem
+- Recorte (remover borda)
+- Filtragem de imagem, redução de ruído
+- Vá para o fundo
+- Separação de cores
+- Rodar
+2. Aprendizado de máquina rotativo
 - KNN
 - SVM
 
-使用这类方法对使用者的要求较高，且由于图片的变化类型较多，处理的方法不够通用，经常花费很多时间去调整处理步骤和相关算法。  
-而使用**卷积神经网络**，只需要通过简单的前处理，就可以实现大部分静态字符型验证码的端到端识别，效果很好，通用性很高。  
+O uso desse tipo de método tem requisitos mais elevados para os usuários e, como existem muitos tipos de mudanças na imagem, o método de processamento não é universal o suficiente e, muitas vezes, leva muito tempo para ajustar as etapas de processamento e algoritmos relacionados.
+Usando a ** Rede Neural Convolucional **, você pode realizar o reconhecimento ponta a ponta da maioria dos códigos de verificação de caracteres estáticos com um pré-processamento simples, que é muito eficaz e tem alta versatilidade.
 
-这里列出目前**常用的验证码**生成库：
->参考：[Java验证全家桶](https://www.cnblogs.com/cynchanpin/p/6912301.html)  
+A atual biblioteca de geração de ** código de verificação ** comum está listada aqui：
+>referência：[JavaVerificar grupo de família](https://www.cnblogs.com/cynchanpin/p/6912301.html)  
 
-| 语言 | 验证码库名称 | 链接 | 样例 |
+| Língua | Nome da biblioteca de código de verificação | 链接 | Amostra |
 | ------ | ------ | ------ | ------ |
-| Java | JCaptcha | [示例](https://jcaptcha.atlassian.net/wiki/spaces/general/pages/1212427/Samples+tests)  | ![效果1](./readme_image/jcaptcha1.jpg) ![效果2](./readme_image/jcaptcha2.jpg) ![效果3](./readme_image/jcaptcha3.jpg) |
+| Java | JCaptcha | [Exemplo](https://jcaptcha.atlassian.net/wiki/spaces/general/pages/1212427/Samples+tests)  | ![Efeito 1](./readme_image/jcaptcha1.jpg) ![效果2](./readme_image/jcaptcha2.jpg) ![efeito3](./readme_image/jcaptcha3.jpg) |
 | Java | JCaptcha4Struts2 |  |  |
-| Java | SimpleCaptcha | [例子](https://www.oschina.net/p/simplecaptcha)   | ![效果1](./readme_image/SimpleCaptcha_1.jpg) ![效果2](./readme_image/SimpleCaptcha_2.jpg) ![效果3](./readme_image/SimpleCaptcha_3.jpg) |
-| Java | kaptcha | [例子](https://github.com/linghushaoxia/kaptcha) | ![水纹效果](./readme_image/Kaptcha_5.png) ![鱼眼效果](./readme_image/Kaptcha_2.png) ![阴影效果](./readme_image/Kaptcha_3.png) |
-| Java | patchca |  | ![效果1](./readme_image/patchca_1.png) |
+| Java | SimpleCaptcha | [exemplo](https://www.oschina.net/p/simplecaptcha)   | ![效果1](./readme_image/SimpleCaptcha_1.jpg) ![efeito2](./readme_image/SimpleCaptcha_2.jpg) ![效果3](./readme_image/SimpleCaptcha_3.jpg) |
+| Java | kaptcha | [exemplo](https://github.com/linghushaoxia/kaptcha) | ![水纹效果](./readme_image/Kaptcha_5.png) ![Efeito Fisheye](./readme_image/Kaptcha_2.png) ![阴影效果](./readme_image/Kaptcha_3.png) |
+| Java | patchca |  | ! [Efeito 1](./readme_image/patchca_1.png) |
 | Java | imageRandom |  |  |  
-| Java | iCaptcha |  | ![效果1](./readme_image/iCaptcha.jpg) |  
-| Java | SkewPassImage |  | ![效果1](./readme_image/SkewPassImage.jpg) |  
-| Java | Cage |  | ![效果1](./readme_image/Cage1.jpg) ![效果2](./readme_image/Cage2.jpg) |
-| Python | captcha | [例子](https://github.com/nickliqian/cnn_captcha/blob/master/gen_image/gen_sample_by_captcha.py) | ![py_Captcha](./readme_image/py_Captcha-1.jpg) |
-| Python | pycapt | [例子](https://github.com/aboutmydreams/pycapt) | ![pycapt](https://github.com/aboutmydreams/pycapt/raw/master/img/do4.png) |
-| PHP | Gregwar/Captcha | [文档](https://github.com/Gregwar/Captcha) |  |
-| PHP | mewebstudio/captcha | [文档](https://github.com/mewebstudio/captcha) |  |
+| Java | iCaptcha |  | ! [Efeito 1](./readme_image/iCaptcha.jpg) |  
+| Java | SkewPassImage |  | ! [Efeito 1](./readme_image/SkewPassImage.jpg) |  
+| Java | Cage |  | ! [Efeito 1]](./readme_image/Cage1.jpg) ![效果2](./readme_image/Cage2.jpg) |
+| Python | captcha | [exemplo](https://github.com/nickliqian/cnn_captcha/blob/master/gen_image/gen_sample_by_captcha.py) | ![py_Captcha](./readme_image/py_Captcha-1.jpg) |
+| Python | pycapt | [exemplo](https://github.com/aboutmydreams/pycapt) | ![pycapt](https://github.com/aboutmydreams/pycapt/raw/master/img/do4.png) |
+| PHP | Gregwar/Captcha | [exemplo](https://github.com/Gregwar/Captcha) |  |
+| PHP | mewebstudio/captcha | [exemplo](https://github.com/mewebstudio/captcha) |  |
 
-## 1.2 目录结构
-### 1.2.1 基本配置
-| 序号 | 文件名称 | 说明 |
+## 1.2 Estrutura de Diretório
+### 1.2.1 Configuração básica
+| Número de série | nome do arquivo | Descrição |
 | ------ | ------ | ------ |
-| 1 | `conf/` | 配置文件目录 |
-| 2 | `sample/` | 数据集目录 |
-| 3 | `model/` | 模型文件目录 |
-| 4 | `cnnlib/` | 封装CNN的相关代码目录 |
-### 1.2.2 训练模型
-| 序号 | 文件名称 | 说明 |
+| 1 | `conf/` | Descrição do diretório do arquivo de configuração |
+| 2 | `sample/` | Catálogo de conjuntos de dados |
+| 3 | `model/` | Diretório do arquivo de modelo |
+| 4 | `cnnlib/` | Diretório de código relacionado ao pacote CNN|
+### 1.2.2 Modelo de treinamento
+| Número de série | nome do arquivo | Descrição |
 | ------ | ------ | ------ |
-| 1 | verify_and_split_data.py | 验证数据集、拆分数据为训练集和测试集 |
-| 2 | network.py | cnn网络基类 |
-| 3 | train_model.py | 训练模型 |
-| 4 | test_batch.py | 批量验证 |
-| 5 | gen_image/gen_sample_by_captcha.py | 生成验证码的脚本 |
-| 6 | gen_image/collect_labels.py | 用于统计验证码标签（常用于中文验证码） |
+| 1 | verify_and_split_data.py | Conjunto de dados de validação, Divida os dados em conjunto de treinamento e conjunto de teste |
+| 2 | network.py | cnnClasse base de rede |
+| 3 | train_model.py | Modelo de treinamento |
+| 4 | test_batch.py | Verificação de lote |
+| 5 | gen_image/gen_sample_by_captcha.py | Script para gerar código de verificação |
+| 6 | gen_image/collect_labels.py | Usado para etiquetas de código de verificação estatística (geralmente usado para códigos de verificação chineses) |
 
-### 1.2.3 web接口
-| 序号 | 文件名称 | 说明 |
+### 1.2.3 webinterface
+| Número de série | nome do arquivo | Descrição |
 | ------ | ------ | ------ |
-| 1 | webserver_captcha_image.py | 获取验证码接口 |
-| 2 | webserver_recognize_api.py | 提供在线识别验证码接口 |
-| 3 | recognize_online.py | 使用接口识别的例子 |
-| 4 | recognize_local.py | 测试本地图片的例子 |
-| 5 | recognize_time_test.py | 压力测试识别耗时和请求响应耗时 |
+| 1 | webserver_captcha_image.py | Obtenha a interface do código de verificação |
+| 2 | webserver_recognize_api.py | Fornece interface de código de verificação de identificação online |
+| 3 | recognize_online.py | Exemplos de uso de reconhecimento de interface |
+| 4 | recognize_local.py | Exemplo de teste de imagens locais |
+| 5 | recognize_time_test.py | A identificação do teste de estresse é demorada e a resposta da solicitação consome muito tempo |
 
-## 1.3 依赖
+## 1.3 confiar
 ```
 pip install -r requirements.txt
 ```
-注意：如果需要使用GPU进行训练，请把文件中的tenforflow修改为tensorflow-gpu
+Nota：Se você precisar usar GPU para treinamento，Por favor, coloque no arquivotenforflowmudar paratensorflow-gpu
 
-## 1.4 模型结构
+## 1.4 Estrutura do modelo
 
-| 序号 | 层级 |
+| Número de série | Nível do número de série |
 | :------: | :------: |
-| 输入 | input |
-| 1 | 卷积层 + 池化层 + 降采样层 + ReLU  |
-| 2 | 卷积层 + 池化层 + 降采样层 + ReLU  |
-| 3 | 卷积层 + 池化层 + 降采样层 + ReLU  |
-| 4 | 全连接 + 降采样层 + Relu   |
-| 5 | 全连接 + softmax  |
-| 输出 | output  |
+| digitar | input |
+| 1 | Camada convolucional + Camada de pooling + Camada de redução da resolução + ReLU  |
+| 2 | Camada convolucional + Camada de pooling + Camada de redução da resolução + ReLU  |
+| 3 | Camada convolucional + Camada de pooling + Camada de redução da resolução + ReLU  |
+| 4 | Totalmente conectado + Camada de redução da resolução + Relu   |
+| 5 | Totalmente conectado + softmax  |
+| Resultado | output  |
 
-# 2 如何使用
-## 2.1 数据集
-原始数据集可以存放在`./sample/origin`目录中。  
-为了便于处理，图片最好以`2e8j_17322d3d4226f0b5c5a71d797d2ba7f7.jpg`格式命名（标签_序列号.后缀）。 
+# 2 Como usar
+## 2.1 Como usar o conjunto de dados
+O conjunto de dados original pode ser armazenado em`./sample/origin`Diretório.  
+A fim de facilitar o processamento, a imagem é melhor para`2e8j_17322d3d4226f0b5c5a71d797d2ba7f7.jpg`Nomenclatura do formato (label_serial number. Sufixo).
   
-如果你没有训练集，你可以使用`gen_sample_by_captcha.py`文件生成训练集文件。
-生成之前你需要修改相关配置`conf/captcha_config.json`（路径、文件后缀、字符集等）。
+Se você não tem um conjunto de treinamento, você pode usar`gen_sample_by_captcha.py`O arquivo gera o arquivo do conjunto de treinamento.
+Você precisa modificar a configuração relevante antes de gerar`conf/captcha_config.json`(Caminho, sufixo do arquivo, conjunto de caracteres, etc.).
 ```
 {
-  "root_dir": "sample/origin/",  # 验证码保存路径
-  "image_suffix": "png",         # 验证码图片后缀
-  "characters": "0123456789",    # 生成验证码的可选字符
-  "count": 1000,                 # 生成验证码的图片数量
-  "char_count": 4,               # 每张验证码图片上的字符数量
-  "width": 100,                  # 图片宽度
-  "height": 60                   # 图片高度
+  "root_dir": "sample/origin/",  # Caminho para salvar o código de verificação
+  "image_suffix": "png",         # Sufixo da imagem do código de verificação
+  "characters": "0123456789",    # Caracteres opcionais para gerar código de verificação
+  "count": 1000,                 # O número de fotos que geraram o código de verificação
+  "char_count": 4,               # O número de fotos que geraram o código de verificação
+  "width": 100,                  # Largura da imagem
+  "height": 60                   # Altura da imagem
 }
 ```
 
-## 2.2 配置文件
-创建一个新项目前，需要自行**修改相关配置文件**`conf/sample_config.json`。
+## 2.2 Arquivo de configuração
+Antes de criar um novo projeto, você precisa ** modificar os arquivos de configuração relacionados ** por conta própria.`conf/sample_config.json`.
 ```
 {
-  "origin_image_dir": "sample/origin/",  # 原始文件
-  "new_image_dir": "sample/new_train/",  # 新的训练样本
-  "train_image_dir": "sample/train/",    # 训练集
-  "test_image_dir": "sample/test/",      # 测试集
-  "api_image_dir": "sample/api/",        # api接收的图片储存路径
-  "online_image_dir": "sample/online/",  # 从验证码url获取的图片的储存路径
-  "local_image_dir": "sample/local/",    # 本地保存图片的路径
-  "model_save_dir": "model/",            # 从验证码url获取的图片的储存路径
-  "image_width": 100,                    # 图片宽度
-  "image_height": 60,                    # 图片高度
-  "max_captcha": 4,                      # 验证码字符个数
-  "image_suffix": "png",                 # 图片文件后缀
-  "char_set": "0123456789abcdefghijklmnopqrstuvwxyz",  # 验证码识别结果类别
-  "use_labels_json_file": false,                       # 是否开启读取`labels.json`内容
-  "remote_url": "http://127.0.0.1:6100/captcha/",      # 验证码远程获取地址
-  "cycle_stop": 3000,                                  # 启动任务后的训练指定次数后停止
-  "acc_stop": 0.99,                                    # 训练到指定准确率后停止
-  "cycle_save": 500,                                   # 训练指定次数后定时保存模型
-  "enable_gpu": 0,                                     # 是否开启GUP训练
-  "train_batch_size": 128,                             # 训练时每次使用的图片张数，如果CPU或者GPU内存太小可以减少这个参数
-  "test_batch_size": 100                               # 每批次测试时验证的图片张数，不要超过验证码集的总数
+  "origin_image_dir": "sample/origin/",  # Arquivo original
+  "new_image_dir": "sample/new_train/",  # Novo exemplo de treinamento
+  "train_image_dir": "sample/train/",    # Conjunto de treinamento
+  "test_image_dir": "sample/test/",      # Conjunto de teste
+  "api_image_dir": "sample/api/",        # apiCaminho de armazenamento das fotos recebidas
+  "online_image_dir": "sample/online/",  # O caminho de armazenamento da imagem obtida do URL do código de verificação
+  "local_image_dir": "sample/local/",    # Caminho para salvar as fotos localmente
+  "model_save_dir": "model/",            # O caminho de armazenamento da imagem obtida do URL do código de verificação
+  "image_width": 100,                    # Largura da imagem
+  "image_height": 60,                    # Altura da imagem
+  "max_captcha": 4,                      # Número de caracteres no código de verificação
+  "image_suffix": "png",                 # Sufixo do arquivo de imagem
+  "char_set": "0123456789abcdefghijklmnopqrstuvwxyz",  # Categoria de resultado de reconhecimento de código de verificação
+  "use_labels_json_file": false,                       # Se deve habilitar a leitura do conteúdo de `labels.json`
+  "remote_url": "http://127.0.0.1:6100/captcha/",      # Código de verificação para obter o endereço remotamente
+  "cycle_stop": 3000,                                  # O treinamento após o início da tarefa para após o número especificado de vezes
+  "acc_stop": 0.99,                                    # Pare após o treinamento com a precisão especificada
+  "cycle_save": 500,                                   # Salve o modelo regularmente após o treinamento por um determinado número de vezes
+  "enable_gpu": 0,                                     # Se deve habilitar o treinamento GUP
+  "train_batch_size": 128,                             # O número de fotos usadas a cada vez durante o treinamento. Se a memória da CPU ou GPU for muito pequena, este parâmetro pode ser reduzido
+  "test_batch_size": 100                               # O número de fotos a serem verificadas durante cada lote de testes não deve exceder o número total de conjuntos de códigos de verificação
 }
 
 ```
-关于`验证码识别结果类别`，假设你的样本是中文验证码，你可以使用`tools/collect_labels.py`脚本进行标签的统计。
-会生成文件`gen_image/labels.json`存放所有标签，在配置文件中设置`use_labels_json_file = True`开启读取`labels.json`内容作为`结果类别`。
+Em relação à `categoria de resultado de reconhecimento do código de verificação`, presumindo que sua amostra seja um código de verificação chinês, você pode usar`tools/collect_labels.py`O script executa estatísticas de rótulo.
+Irá gerar arquivos`gen_image/labels.json`Armazene todas as tags, definidas no arquivo de configuração`use_labels_json_file = True`Leitura aberta`labels.json`Conteúdo como`Categoria de resultado ».
 
-## 2.3 验证和拆分数据集
-此功能会校验原始图片集的尺寸和测试图片是否能打开，并按照19:1的比例拆分出训练集和测试集。  
-所以需要分别创建和指定三个文件夹：origin，train，test用于存放相关文件。
+## 2.3 Valide e divida o conjunto de dados
+Esta função irá verificar o tamanho do conjunto de imagens original e se a imagem de teste pode ser aberta, e dividir o conjunto de treinamento e conjunto de teste em uma proporção de 19: 1.
+Portanto, você precisa criar e especificar três pastas: origem, treinamento e teste para armazenar os arquivos relacionados.
 
-也可以修改为不同的目录，但是最好修改为绝对路径。  
-文件夹创建好之后，执行以下命令即可：
+Você também pode modificá-lo para um diretório diferente, mas é melhor modificá-lo para um caminho absoluto.
+Depois que a pasta for criada, execute o seguinte comando：
 ```
 python3 verify_and_split_data.py
 ```
-一般会有类似下面的提示
+Geralmente, haverá um prompt semelhante ao seguinte
 ```
->>> 开始校验目录：[sample/origin/]
-开始校验原始图片集
-原始集共有图片: 1001张
-====以下1张图片有异常====
-[第0张图片] [.DStore] [文件后缀不正确]
+>>> Comece a verificar o catálogo：[sample/origin/]
+Comece a verificar a coleção de fotos original
+O conjunto original de imagens compartilhadas: 1001Zhang
+====A seguinte 1 imagem é anormal====
+[Foto 0] [.DStore] [Sufixo de arquivo incorreto]
 ========end
-开始分离原始图片集为：测试集（5%）和训练集（95%）
-共分配1000张图片到训练集和测试集，其中1张为异常留在原始目录
-测试集数量为：50
-训练集数量为：950
->>> 开始校验目录：[sample/new_train/]
-【警告】找不到目录sample/new_train/，即将创建
-开始校验原始图片集
-原始集共有图片: 0张
-====以下0张图片有异常====
-未发现异常（共 0 张图片）
+Comece a separar o conjunto de imagens original: conjunto de teste (5%) e conjunto de treinamento (95%)
+Um total de 1000 imagens são alocadas para o conjunto de treinamento e conjunto de teste, uma das quais é uma anomalia e permanece no diretório original
+O número de conjuntos de teste é: 50
+O número de conjuntos de treinamento é: 950
+>>> Comece a verificar o diretório:[sample/new_train/]
+Comece a verificar o diretório:sample/new_train/，Prestes a criar
+Comece a verificar a coleção de fotos original
+O conjunto original de imagens compartilhadas: 0 folhas
+====As seguintes 0 imagens são anormais====
+Nenhuma anormalidade encontrada (0 fotos no total)
 ========end
-开始分离原始图片集为：测试集（5%）和训练集（95%）
-共分配0张图片到训练集和测试集，其中0张为异常留在原始目录
-测试集数量为：0
-训练集数量为：0
+Comece a separar o conjunto de imagens original: conjunto de teste (5%) e conjunto de treinamento (95%)
+Um total de 0 imagens são alocadas para o conjunto de treinamento e conjunto de teste, das quais 0 imagens são deixadas no diretório original como anomalias
+O número de conjuntos de teste é: 0
+O número de conjuntos de treinamento é: 0
 ```
-程序会同时校验和分割`origin_image_dir`和`new_image_dir`两个目录中的图片；后续有了更多的样本，可以把样本放在`new_image_dir`目录中再次执行`verify_and_split_data`。  
-程序会把无效的文件留在原文件夹。  
+O programa irá verificar e dividir ao mesmo tempo`origin_image_dir`com`new_image_dir`As fotos nos dois catálogos; haverá mais amostras no futuro, você pode colocar as amostras em`new_image_dir`Execute novamente no diretório`verify_and_split_data`.
+O programa deixará arquivos inválidos na pasta original.  
 
-此外，当你有新的样本需要一起训练，可以放在`sample/new`目录下，再次运行`python3 verify_and_split_data.py`即可。  
-需要注意的是，如果新的样本中有新增的标签，你需要把新的标签增加到`char_set`配置中或者`labels.json`文件中。 
+Além disso, quando você tem novas amostras que precisam ser treinadas juntas, você pode colocar`sample/new`Diretório, execute novamente`python3 verify_and_split_data.py`É isso. 
+Deve-se notar que se houver novas tags na nova amostra, você precisa adicionar as novas tags a`char_set`É isso. Configurando ou`labels.json`Arquivo. 
  
-## 2.4 训练模型
-创建好训练集和测试集之后，就可以开始训练模型了。  
-训练的过程中会输出日志，日志展示当前的训练轮数、准确率和loss。  
-**此时的准确率是训练集图片的准确率，代表训练集的图片识别情况**  
-例如：
+## 2.4 Modelo de treinamento
+Depois de criar o conjunto de treinamento e o conjunto de teste, você pode começar a treinar o modelo. 
+Durante o treinamento, um registro será gerado, que mostra o número atual de rodadas de treinamento, precisão e perda.  
+** A taxa de precisão neste momento é a taxa de precisão da imagem do conjunto de treinamento, que representa a situação de reconhecimento de imagem do conjunto de treinamento **  
+Por exemplo:
 ```
-第10次训练 >>> 
-[训练集] 字符准确率为 0.03000 图片准确率为 0.00000 >>> loss 0.1698757857
-[验证集] 字符准确率为 0.04000 图片准确率为 0.00000 >>> loss 0.1698757857
+10º treinamento >>> 
+[Conjunto de treinamento] A taxa de precisão do caractere é 0,03000 A taxa de precisão da imagem é 0,00000 >>> loss 0.1698757857
+[Conjunto de validação] A taxa de precisão do caractere é 0,04000 A taxa de precisão da imagem é 0,00000 >>> loss 0.1698757857
 ```
-字符准确率和图片准确率的解释：
+Explicação da precisão do caractere e precisão da imagem：
 ```
-假设：有100张图片，每张图片四个字符，共400个字符。我们这里把任务拆分为为需要识别400个字符
-字符准确率：识别400的字符中，正确字符的占比。
-图片准确率：100张图片中，4个字符完全识别准确的图片占比。
+Premissa: Existem 100 imagens, cada imagem tem quatro caracteres, um total de 400 caracteres. Aqui, dividimos a tarefa em 400 caracteres que precisam ser reconhecidos
+Precisão do caractere: a porcentagem de caracteres corretos entre os 400 caracteres reconhecidos.
+Precisão da imagem: entre 100 imagens, a proporção de imagens com 4 caracteres totalmente reconhecida com precisão.
 ```
-这里不具体介绍tensorflow安装相关问题，直奔主题。  
-确保图片相关参数和目录设置正确后，执行以下命令开始训练：
+Não vou introduzir especificamente questões relacionadas à instalação do tensorflow aqui, e vou direto ao tópico.
+Depois de garantir que os parâmetros relacionados à imagem e as configurações do diretório estão corretos, execute o seguinte comando para iniciar o treinamento:
 ```
 python3 train_model.py
 ```
-也可以根据`train_model.py`的`main`函数中的代码调用类开始训练或执行一次简单的识别演示。  
+Também pode ser baseado em`train_model.py`de`main`O código na função chama a classe para iniciar o treinamento ou realizar uma demonstração de reconhecimento simples.  
 
-由于训练集中常常不包含所有的样本特征，所以会出现训练集准确率是100%而测试集准确率不足100%的情况，此时提升准确率的一个解决方案是增加正确标记后的负样本。
-
-## 2.5 批量验证
-使用测试集的图片进行验证，输出准确率。  
+Uma vez que o conjunto de treinamento muitas vezes não contém todos os recursos de amostra, haverá casos em que a precisão do conjunto de treinamento é 100% e a precisão do conjunto de teste é inferior a 100%. Neste momento, uma solução para melhorar a precisão é aumentar as amostras negativas após a rotulagem correta.
+## 2.5 Verificação de lote
+Use as imagens do conjunto de teste para verificar e gerar a taxa de precisão.  
 ```
 python3 test_batch.py
 ```
-同样可以根据`main`函数中的代码调用类开始验证。
+O mesmo pode ser baseado em`main`O código na função chama a classe para iniciar a verificação.
 
-## 2.6 启动WebServer
-项目已经封装好加载模型和识别图片的类，启动`web server`后调用接口就可以使用识别服务。  
-启动`web server`
+## 2.6comeceWebServer
+O projeto encapsulou a classe para carregar o modelo e reconhecer a imagem, iniciar`web server`Depois de chamar a interface, o serviço de reconhecimento pode ser usado.  
+comece`web server`
 ```
 python3 webserver_recognize_api.py
 ```
-接口url为`http://127.0.0.1:6000/b`
+O url da interface é`http://127.0.0.1:6000/b`
 
-## 2.7 调用接口识别
-使用requests调用接口:
+## 2.7 Identificação da interface de chamada
+usar requestsInterface de chamada:
 ```
 url = "http://127.0.0.1:6000/b"
 files = {'image_file': (image_file_name, open('captcha.jpg', 'rb'), 'application')}
 r = requests.post(url=url, files=files)
 ```
-返回的结果是一个json：
+O resultado retornado é umjson：
 ```
 {
     'time': '1542017705.9152594',
     'value': 'jsp1',
 }
 ```
-文件`recognize_local.py`是使用接口识别本地的例子，这个例子运行成功，那么识别验证码的一套流程基本上是走了一遍了。  
-在线识别验证码是显示中常用场景，文件`recognize_online.py`是使用接口在线识别的例子，参见：`## 2.11 在线识别`。
+Arquivo`recognize_local.py`Este é um exemplo de uso da interface para identificar a área local. Se este exemplo for executado com sucesso, então o processo de identificação do código de verificação está basicamente concluído.  
+O código de verificação de identificação online é uma cena comum no display, arquivo`recognize_online.py`É um exemplo de uso da interface para identificação online, consulte:`## 2.11 Reconhecimento online.
 
-## 2.8 部署
-部署的时候，把`webserver_recognize_api.py`文件的最后一行修改为如下内容：
+## 2.8 implantar
+Ao implantar, coloque`webserver_recognize_api.py`Modifique a última linha do arquivo para ler da seguinte forma:
 ```
 app.run(host='0.0.0.0',port=5000,debug=False)
 ```
-然后开启端口访问权限，就可以通过外网访问了。  
-另外为了开启多进程处理请求，可以使用uwsgi+nginx组合进行部署。  
-这部分可以参考：[Flask部署选择](http://docs.jinkan.org/docs/flask/deploying/index.html)
+Em seguida, abra a autoridade de acesso à porta, você pode acessar através da rede externa.  
+Além disso, para habilitar solicitações de processamento de vários processos, você pode usar a combinação uwsgi + nginx para implantação.  
+Esta parte pode se referir a:[FlaskOpções de implantação](http://docs.jinkan.org/docs/flask/deploying/index.html)
 
-## 2.9 部署多个模型
-部署多个模型:
-在`webserver_recognize_api.py`文件汇总，新建一个Recognizer对象；  
-并参照原有`up_image`函数编写的路由和识别逻辑。
+## 2.9 Implante vários modelos
+Implante vários modelos:
+no`webserver_recognize_api.py`Resumo do arquivo, crie um novo objeto Reconhecedor; 
+E consulte o original`up_image`Lógica de roteamento e identificação escrita pela função.
 ```
 Q = Recognizer(image_height, image_width, max_captcha, char_set, model_save_dir)
 ```
-注意修改这一行：
+Preste atenção para modificar esta linha:
 ```
 value = Q.rec_image(img)
 ```
 
-## 2.10 在线识别
-在线识别验证码是显示中常用场景，即实时获取目标验证码来调用接口进行识别。  
-为了测试的完整性，这里搭建了一个验证码获取接口，通过执行下面的命令启动：  
+## 2.10 Reconhecimento online
+O código de verificação de identificação online é um cenário comum no display, ou seja, o código de verificação do alvo é obtido em tempo real para chamar a interface de identificação.
+Para a integridade do teste, uma interface de aquisição de código de verificação é construída aqui, que é iniciada executando o seguinte comando: 
 ```
 python webserver_captcha_image.py
 ```
-启动后通过访问此地址：`http://127.0.0.1:6100/captcha/`可以接收到验证码图片的二进制流文件。  
-具体进行在线识别任务的demo参见：`recognize_online.py`。  
+Depois de começar, visitando este endereço：`http://127.0.0.1:6100/captcha/`Você pode receber o arquivo de fluxo binário da imagem do código de verificação.  
+Tarefas específicas de identificação onlinedemoVer:`recognize_online.py`。  
 
-# 3 数据统计
-## 3.1 训练数据统计
-由于很多同学提出，“需要训练多久呀？”、“准确率可以达到多少？”、“为什么我的准确率一直是0？”类似的疑问。  
-这一小节，使用默认配置（2019.06.02），把训练过程中的数据做了统计，给大家做一个展示。  
-本次测试条件如下：
-- 验证码：本项目自带生成验证码程序，数字+小写英文
-- 数量：20000张
-- 计算引擎：GPU
-- GPU型号：笔记本，GTX 950X 2G显卡
+# 3 Estatísticas
+## 3.1 Estatísticas de dados de treinamento
+Muitos alunos fizeram perguntas semelhantes: "Quanto tempo leva para treinar?", "Quanta precisão pode ser alcançada?", "Por que minha precisão é sempre 0?"
+Nesta seção, a configuração padrão (2019.06.02) é usada para fazer estatísticas sobre os dados durante o processo de treinamento e para mostrar a todos.
+As condições de teste são as seguintes:
+-Código de verificação: Este projeto vem com um programa para gerar um código de verificação, números + Inglês minúsculo
+-Quantidade: 20.000 folhas
+-Motor de computação: GPU
+- Modelo GPU: notebook, placa gráfica GTX 950X 2G
   
-经过测试：
-5000次，25分钟，**训练集**字符准确率84%，图片准确率51%；  
-9190次，46分钟，**训练集**字符准确率100%，图片准确率100%；  
-12000，60分钟，**测试集**的准确率基本上已经跑不动了。  
+após o teste:
+5000 vezes, 25 minutos, a precisão dos caracteres no conjunto de treinamento é de 84% e a precisão das imagens é de 51%;
+9190 vezes, 46 minutos, ** conjunto de treinamento ** a taxa de precisão do caractere é 100%, a taxa de precisão da imagem é 100%;
+12.000, 60 minutos, a precisão do ** conjunto de teste ** basicamente não pode ser executada. 
 
-使用`test_batch.py`测试，日志如下：  
+usar`test_batch.py`Teste, o log é o seguinte:  
 ```
-100个样本识别耗时6.513171672821045秒，准确率37.0%
+Leva 6,513171672821045 segundos para identificar 100 amostras, com uma taxa de precisão de 37,0%
 ```
-有37%的准确率，可以说是识别成功的第一步了。  
+Com uma precisão de 37%, pode-se dizer que é o primeiro passo para uma identificação bem-sucedida.
 
-曲线图如下：  
-训练集-  
+O gráfico é o seguinte:
+Conjunto de treinamento-  
 ![train_acc](readme_image/train_acc.png) 
    
-测试集-   
+Conjunto de teste-   
 ![test_acc](readme_image/test_acc.png)  
 
 
-## 3.2 压力测试和统计数据
-提供了一个简易的压力测试脚本，可以统计api运行过程中识别耗时和请求耗时的相关数据，不过图需要自己用Excel拉出来。  
-打开文件`recognize_time_test.py`，修改`main`函数下的`test_file`路径，这里会重复使用一张图片来访问是被接口。  
-最后数据会储存在test.csv文件中。  
-使用如下命令运行：  
+## 3.2 Teste de estresse e estatísticas
+Fornece um script de teste de estresse simples para estatísticasapiReconhecer e solicitar dados demorados durante o processo em execução, mas o gráfico precisa ser extraído do Excel.  
+abrir um arquivo`recognize_time_test.py`，modificar`main`Função sob`test_file`Caminho, aqui irá reutilizar uma imagem para acessar a interface.  
+Os dados finais serão armazenados emtest.csvArquivo.
+Use o seguinte comando para executar：  
 ```
 python3 recognize_time_test.py
-----输出如下
-2938,5150,13:30:25,总耗时：29ms,识别：15ms,请求：14ms
-2939,5150,13:30:25,总耗时：41ms,识别：21ms,请求：20ms
-2940,5150,13:30:25,总耗时：47ms,识别：16ms,请求：31ms
+----O resultado é o seguinte
+2938,5150,13:30:25,Consome muito tempo：29ms,Identificar：15ms,solicitação：14ms
+2939,5150,13:30:25,Consome muito tempo：41ms,Identificar：21ms,solicitação：20ms
+2940,5150,13:30:25,Consome muito tempo：47ms,Identificar：16ms,solicitação：31ms
 ```
-这里对一个模型进行了两万次测试后，一组数据test.csv。
-把test.csv使用箱线图进行分析后可以看到：  
-![压力测试结果](readme_image/压力测试结果.png)  
-- 单次请求API总耗时（平均值）：27ms  
-- 单次识别耗时（平均值）：12ms  
-- 每次请求耗时（平均值）：15ms  
-其中有：请求API总耗时 = 识别耗时 + 请求耗时  
+Após 20.000 testes em um modelo, um conjunto de dadostest.csv。
+Portest.csvApós a análise usando o gráfico de caixa, você pode ver:  
+! [Resultado do teste de estresse](readme_image/ Resultados do teste de estresse.png)  
+-O tempo total gasto para uma única solicitação de API (média): 27 ms
+-Tempo de reconhecimento único (média): 12ms
+-Muito demorado por solicitação (média): 15ms
+Entre eles estão: tempo total para solicitar API = demorado para identificar + tempo para solicitar  
 
-# 4 开发说明
+# 4 Instruções de desenvolvimento
 - 20190209  
-1. 目前tensorboard展示支持的不是很好。
+1. AtualmentetensorboardO suporte da tela não é muito bom.
 - 20190601
-1. 最近比较忙，issue回的有点慢，请大家见谅
-2. dev分支开发到一半一直没时间弄，今天儿童节花了一下午时间更新了一下:)
+1. Estive ocupado recentemente，issueÉ um pouco lento，Por favor me perdoe
+2. devNo meio do desenvolvimento do branch, não há tempo para obtê-lo，Demorei uma tarde para atualizar sobre o Dia das Crianças hoje:)
 3. 感谢看到这里的你，谢谢你的支持
 
-# 4 已知BUG
-1. 使用pycharm启动recognize_api.py文件报错
+# 4 BUG conhecido
+1. usarpycharmIniciar recognize_api.pyErro de arquivo
+
+
 ```
 2018-12-01 00:35:15.106333: W T:\src\github\tensorflow\tensorflow\core\framework\op_kernel.cc:1273] OP_REQUIRES failed at save_restore_tensor.cc:170 : Invalid argument: Unsuccessful TensorSliceReader constructor: Failed to get matching files on ./model/: Not found: FindFirstFile failed for: ./model : ϵͳ�Ҳ���ָ����·����
 ; No such process
@@ -400,28 +401,28 @@ tensorflow.python.framework.errors_impl.InvalidArgumentError: Unsuccessful Tenso
 ; No such process
 	 [[Node: save/RestoreV2 = RestoreV2[dtypes=[DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT, DT_FLOAT], _device="/job:localhost/replica:0/task:0/device:CPU:0"](_arg_save/Const_0_0, save/RestoreV2/tensor_names, save/RestoreV2/shape_and_slices)]]
 ```
-由pycharm默认设置了工作空间，导致读取相对路径的model文件夹出错。
-解决办法：编辑运行配置，设置工作空间为项目目录即可。
-![bug_api启动失败](readme_image/bug_api启动失败.png)
+A área de trabalho é definida por pycharm por padrão, o que leva a um erro na leitura da pasta de modelo do caminho relativo.
+Solução: edite a configuração de execução e defina o espaço de trabalho como o diretório do projeto.
+![bug_apifalha ao ativar](readme_image/bug_apifalhou ao ativar.png)
 
 2. FileNotFoundError: [Errno 2] No such file or directory: 'xxxxxx'  
-目录下有文件夹不存在，在指定目录创建好文件夹即可。
+Se houver uma pasta que não existe no diretório, basta criar uma pasta no diretório especificado.
 
-3. api程序在运行过程中内存越占越大  
-结果查阅资料：[链接](https://blog.csdn.net/The_lastest/article/details/81130500)  
-在迭代循环时，不能再包含任何张量的计算表达式，否在会内存溢出。
-将张量的计算表达式放到init初始化执行后，识别速度得到极大的提升。
+3. apiQuanto mais memória o programa ocupa enquanto está em execução 
+Dados de verificação de resultados：[链接](https://blog.csdn.net/The_lastest/article/details/81130500)  
+Ao iterar o loop, você não pode mais incluir nenhuma expressão de cálculo de tensor, caso contrário, a memória irá estourar.
+Depois que a expressão de cálculo do tensor é colocada na execução de inicialização do init, a velocidade de reconhecimento é muito melhorada.
 
-4. 加载多个模型报错
-原因是两个Recognizer对象都使用了默认的Graph。
-解决办法是在创建对象的时候不使用默认Graph，新建graph，这样每个Recognizer都使用不同的graph，就不会冲突了。
+4. Erro ao carregar vários modelos
+O motivo é doisRecognizerTodos os objetos usam o padrãoGraph。
+A solução é não usar o padrão ao criar o objetoGraph，Novograph，Então cadaRecognizerTodos usam diferentesgraph，Não haverá conflitos.
 
-5. Flask程序用于生产
-可以参考官方文档：[Flask的生产配置](http://docs.jinkan.org/docs/flask/config.html)
+5. FlaskPrograma para produção
+Você pode consultar os documentos oficiais:[FlaskConfiguração de produção](http://docs.jinkan.org/docs/flask/config.html)
 
 6. OOM happens
 ```
 Hint: If you want to see a list of allocated tensors when OOM happens,
 add report_tensor_allocations_upon_oom to RunOptions for current allocation info.
 ```
-尽可能关闭其他占用GPU或者CPU的任务，或者减小`sample_config.json`中的`train_batch_size`参数。
+Desligue outras tarefas que ocupam GPU ou CPU tanto quanto possível, ou reduza`sample_config.json`meio`train_batch_size`parâmetro.
